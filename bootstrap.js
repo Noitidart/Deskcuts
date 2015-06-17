@@ -123,23 +123,6 @@ function Factory(component) {
 	this.register();
 }
 
-function Factory(component) {
-	this.createInstance = function(outer, iid) {
-		if (outer) {
-			throw Cr.NS_ERROR_NO_AGGREGATION;
-		}
-		return new component();
-	};
-	this.register = function() {
-		Cm.registerFactory(component.prototype.classID, component.prototype.classDescription, component.prototype.contractID, this);
-	};
-	this.unregister = function() {
-		Cm.unregisterFactory(component.prototype.classID, this);
-	}
-	Object.freeze(this);
-	this.register();
-}
-
 var factory = new Factory(AboutDeskcuts);
 // END - Addon Functionalities
 
