@@ -1,9 +1,10 @@
 // Imports
-const {classes: Cc, interfaces: Ci, utils: Cu} = Components;
-Cu.import('resource://gre/modules/devtools/Console.jsm');
-Cu.import('resource://gre/modules/osfile.jsm');
+const {classes: Cc, interfaces: Ci, manager: Cm, results: Cr, utils: Cu, Constructor: CC} = Components;
+Cm.QueryInterface(Ci.nsIComponentRegistrar);
+
 Cu.import('resource://gre/modules/Services.jsm');
 Cu.import('resource://gre/modules/XPCOMUtils.jsm');
+const {TextDecoder, TextEncoder, OS} = Cu.import('resource://gre/modules/osfile.jsm', {});
 
 // Globals
 const core = {
@@ -25,7 +26,7 @@ const core = {
 
 // Lazy Imports
 const myServices = {};
-XPCOMUtils.defineLazyGetter(myServices, 'sb', function () { return Services.strings.createBundle(core.addon.path.locale + 'global.properties?' + Math.random()); /* Randomize URI to work around bug 719376 */ });
+XPCOMUtils.defineLazyGetter(myServices, 'sb', function () { return Services.strings.createBundle(core.addon.path.locale + 'bootstrap.properties?' + Math.random()); /* Randomize URI to work around bug 719376 */ });
 
 function extendCore() {
 	// adds some properties i use to core
@@ -87,7 +88,59 @@ function extendCore() {
 }
 
 // START - Addon Functionalities
+function AboutDeskcuts() {}
+AboutDeskcuts.prototype = Object.freeze({
+	classDescription: 'Deskcuts Application',
+	contractID: '@mozilla.org/network/protocol/about;1?what=deskcuts',
+	classID: Components.ID('{C4BC5338-14B1-11E5-B6A2-D7251E5D46B0}'),
+	QueryInterface: XPCOMUtils.generateQI([Ci.nsIAboutModule]),
 
+	getURIFlags: function(aURI) {
+		return Ci.nsIAboutModule.ALLOW_SCRIPT;
+	},
+
+	newChannel: function(aURI) {
+		let channel = Services.io.newChannel(core.addon.path.content + 'app.xhtml', null, null);
+		channel.originalURI = aURI;
+		return channel;
+	}
+});
+
+function Factory(component) {
+	this.createInstance = function(outer, iid) {
+		if (outer) {
+			throw Cr.NS_ERROR_NO_AGGREGATION;
+		}
+		return new component();
+	};
+	this.register = function() {
+		Cm.registerFactory(component.prototype.classID, component.prototype.classDescription, component.prototype.contractID, this);
+	};
+	this.unregister = function() {
+		Cm.unregisterFactory(component.prototype.classID, this);
+	}
+	Object.freeze(this);
+	this.register();
+}
+
+function Factory(component) {
+	this.createInstance = function(outer, iid) {
+		if (outer) {
+			throw Cr.NS_ERROR_NO_AGGREGATION;
+		}
+		return new component();
+	};
+	this.register = function() {
+		Cm.registerFactory(component.prototype.classID, component.prototype.classDescription, component.prototype.contractID, this);
+	};
+	this.unregister = function() {
+		Cm.unregisterFactory(component.prototype.classID, this);
+	}
+	Object.freeze(this);
+	this.register();
+}
+
+var factory = new Factory(AboutDeskcuts);
 // END - Addon Functionalities
 
 function install() {}
@@ -101,7 +154,7 @@ function startup(aData, aReason) {
 
 function shutdown(aData, aReason) {
 	if (aReason == APP_SHUTDOWN) { return }
-	
+	factory.unregister();
 }
 
 // start - common helper functions
