@@ -87,7 +87,7 @@ function extendCore() {
 
 function init() {
 	extendCore();
-	document.body.textContent = 'You are using: ' + core.os.name;
+	//document.body.textContent = 'You are using: ' + core.os.name;
 }
 
 document.addEventListener('DOMContentLoaded', init, false);

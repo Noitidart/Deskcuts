@@ -1,0 +1,295 @@
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video {
+border:0;
+font-size:100%;
+font:inherit;
+vertical-align:baseline;
+margin:0;
+padding:0;
+}
+
+article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
+display:block;
+}
+
+body {
+line-height:1;
+background:url(body-bg.png);
+color:#838383;
+font:13px "Droid Sans",Arial,Helvetica,sans-serif;
+}
+
+ol,ul {
+list-style:none;
+}
+
+blockquote,q {
+quotes:none;
+}
+
+blockquote:before,blockquote:after,q:before,q:after {
+content:none;
+}
+
+table {
+border-collapse:collapse;
+border-spacing:0;
+}
+
+h1,h2,h3,h4,h5,h6 {
+font-weight:700;
+font-family:"Droid Sans",sans-serif;
+color:#434853;
+text-shadow:0 1px 0 #fff;
+letter-spacing:-.5px;
+}
+
+h1 {
+font-size:20px;
+color:#2d932b;
+border-bottom:1px solid #e0e0e0;
+padding:0 0 13px;
+}
+
+h2 {
+font-size:24px;
+}
+
+h3 {
+font-size:17px;
+}
+
+h4 {
+font-size:14px;
+}
+
+h5 {
+font-size:12px;
+}
+
+h6 {
+font-size:10px;
+}
+
+input,textarea {
+font-family:tahoma,arial;
+font-size:12px;
+color:#57595d;
+outline:none;
+}
+
+input::-moz-placeholder {
+	color: #8E8D8D;
+}
+
+a {
+text-decoration:none;
+}
+
+p {
+line-height:20px;
+}
+
+#box_bg {
+border:1px solid #d5d5d5;
+background:#f9f9f9;
+width:380px;
+display:block;
+-webkit-border-radius:3px;
+-moz-border-radius:3px;
+border-radius:3px;
+box-shadow:0 0 2px #dadada,inset 0 -3px 0 #e6e6e6;
+margin:100px auto 0;
+}
+
+#content {
+padding:23px 28px;
+}
+
+.social {
+height:75px;
+padding:13px 10px 5px;
+}
+
+.blue {
+color:#2b83b6;
+}
+
+.twitter {
+background:url(twitter_btn.png) no-repeat;
+height:32px;
+width:157px;
+display:block;
+float:left;
+margin-top:10px;
+}
+
+.twitter:hover {
+background:url(twitter_btn.png) no-repeat;
+background-position:0 -32px;
+}
+
+.btn_1 {
+text-shadow:-1px -1px 0 #0083b3;
+color:#fff;
+font-weight:700;
+font-size:12px;
+height:32px;
+display:block;
+padding:8px 0 0 35px;
+}
+
+.fb {
+background:url(fb_btn.png) no-repeat;
+height:32px;
+width:157px;
+display:block;
+float:right;
+margin-top:10px;
+}
+
+.fb:hover {
+background:url(fb_btn.png) no-repeat;
+background-position:0 -32px;
+}
+
+.btn_2 {
+text-shadow:-1px -1px 0 #366c96;
+color:#fff;
+font-weight:700;
+font-size:12px;
+height:32px;
+display:block;
+padding:8px 0 0 31px;
+}
+
+.button {
+-webkit-border-radius:3px;
+-moz-border-radius:3px;
+border-radius:3px;
+display:inline-block;
+float:right;
+margin-top:18px;
+}
+
+.button a {
+color:#fff;
+font-weight:700;
+font-size:14px;
+display:block;
+padding:9px 26px 8px;
+}
+
+.button.green {
+background-image:0;
+-ms-filter:"progid:DXImageTransform.Microsoft.gradient(startColorstr=#58BD56, endColorstr=#2D922B)";
+border:1px solid #309230;
+border-bottom:2px solid #166d16;
+box-shadow:inset 0 1px 0 #a1daa0;
+text-shadow:-1px -1px 0 #369135;
+background-color:#49ac47;
+}
+
+.button.green:hover {
+background:#49ac47;
+}
+
+.button.green:active {
+margin-top:19px;
+}
+
+#login {
+border-top:1px solid #e0e0e0;
+padding:5px 0 0;
+}
+
+.login {
+font-size:14px;
+color:#8e8d8d;
+font-family:"Droid Sans";
+background-color:#fdfdfd;
+width:255px;
+display:block;
+border:1px solid #d8d8d8;
+-webkit-border-radius:3px;
+-moz-border-radius:3px;
+border-radius:3px;
+box-shadow:inset 2px 2px 4px #f1f1f1;
+margin:13px 0 -3px;
+padding:11px 15px 10px 50px;
+}
+
+.user {
+background:url(user.png) no-repeat;
+}
+
+.password {
+background:url(password.png) no-repeat;
+}
+
+.checkbox {
+margin:15px 0 15px;
+}
+
+.checkbox li {
+list-style:none;
+height:15px;
+}
+
+.checkbox li:not(#foo)>fieldset>div>span>input[type="checkbox"] {
+opacity:0;
+float:left;
+width:15px;
+}
+
+.checkbox li:not(#foo)>fieldset>div>span>input[type="checkbox"]+label {
+clear:none;
+cursor:pointer;
+background:url(check.png) no-repeat;
+height:15px;
+display:block;
+margin:0;
+padding:0 0 0 22px;
+}
+
+.checkbox li:not(#foo)>fieldset>div>span>input[type="checkbox"]:checked+label {
+background:url(check.png) no-repeat;
+height:15px;
+display:block;
+background-position:0 -15px;
+}
+
+#bottom_text {
+width:300px;
+display:block;
+text-align:center;
+text-shadow:1px 1px 0 #fff;
+line-height:19px;
+margin:12px auto;
+}
+
+#bottom_text a {
+color:#2d932b;
+font-weight:700;
+background:url(bullet.png) no-repeat 100% 50%;
+padding:0 8px 0 0;
+}
+
+#bottom_text a:hover {
+color:#878787;
+-webkit-transition:all .2s linear;
+-moz-transition:all .2s linear;
+-o-transition:all .3s linear;
+-transition:all .2s linear;
+}
+
+#blue {
+color:#2b83b6!important;
+}
+
+#blue:hover {
+color:#878787!important;
+}
+
+.twitter:active,.fb:active {
+margin-top:11px;
+}
