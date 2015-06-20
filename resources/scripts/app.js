@@ -24,7 +24,7 @@ const core = {
 
 // Lazy Imports
 const myServices = {};
-XPCOMUtils.defineLazyGetter(myServices, 'sb', function () { return Services.strings.createBundle(core.addon.path.locale + 'bootstrap.properties?' + Math.random()); /* Randomize URI to work around bug 719376 */ });
+XPCOMUtils.defineLazyGetter(myServices, 'sb', function () { return Services.strings.createBundle(core.addon.path.locale + 'app.properties?' + Math.random()); /* Randomize URI to work around bug 719376 */ });
 
 function extendCore() {
 	// adds some properties i use to core
@@ -114,6 +114,48 @@ function init() {
 	var boxwrap = document.getElementById('boxwrap');
 	//boxwrap.style.visibility = 'visible';
 	boxwrap.style.opacity = '1';
+}
+
+function browseTarg(e) {
+
+	var fp = Cc['@mozilla.org/filepicker;1'].createInstance(Ci.nsIFilePicker);
+	fp.init(Services.wm.getMostRecentWindow(null), myServices.sb.GetStringFromName('targ-picker-title'), Ci.nsIFilePicker.modeOpen);
+	fp.appendFilters(Ci.nsIFilePicker.filterAll);
+
+	var rv = fp.show();
+	if (rv == Ci.nsIFilePicker.returnOK) {
+		
+		var input = e.target.previousSibling;	
+		input.value = fp.file.path;
+
+	}// else { // cancelled	}
+}
+
+function browseIcon(e) {
+
+	var fp = Cc['@mozilla.org/filepicker;1'].createInstance(Ci.nsIFilePicker);
+	fp.init(Services.wm.getMostRecentWindow(null), myServices.sb.GetStringFromName('icon-picker-title'), Ci.nsIFilePicker.modeOpen);
+	
+	switch (core.os.name) {
+		case 'linux':
+			fp.appendFilter('Portable Network Graphic (*.png)', '*.png');
+			break;
+		case 'winnt':
+			fp.appendFilter('Windows Icon (*.ico)', '*.ico');
+			break;
+		case 'darwin':
+			fp.appendFilter('Apple Icon Image (*.icns)', '*.icns');
+			break;
+		default:
+			fp.appendFilters(Ci.nsIFilePicker.filterImages);
+	}
+	var rv = fp.show();
+	if (rv == Ci.nsIFilePicker.returnOK) {
+		
+		var input = e.target.previousSibling;	
+		input.value = fp.file.path;
+
+	}// else { // cancelled	}
 }
 
 document.addEventListener('DOMContentLoaded', init, false);

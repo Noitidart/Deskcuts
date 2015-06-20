@@ -16,7 +16,7 @@
 <!ENTITY deskcuts.app.top.mac 'The launcher will be created on your desktop. Power users have the ability for finer control.'>
 
 <!ENTITY deskcuts.app.heading.win 'HARD LINK'>
-<!ENTITY deskcuts.app.sub.win 'Hard links only work within the same disk. You cannot hard link over the network. A hard link can only be created to files, NOT direcotires.'>
+<!ENTITY deskcuts.app.sub.win 'Hard links only work within the same disk. You cannot hard link over the network. A hard link can only be created to files, NOT directories.'>
 <!ENTITY deskcuts.app.top.win 'The deskcut will be created on your desktop.<br/><br/>A custom icon cannot be set, it will be automatically taken from the target.<br/><br/>If target exists on desktop, provided name must differ.'>
 
 <!ENTITY deskcuts.app.sub.non 'Deskcuts does not support your operating system'>
