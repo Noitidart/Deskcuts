@@ -89,11 +89,14 @@ function init() {
 	extendCore();
 	//document.body.textContent = 'You are using: ' + core.os.name;
 	
-	var os_conts = ['content-non', 'content-linux'];
+	var os_conts = ['content-non', 'content-linux', 'content-win'];
 	var cont_to_show;
 	switch (core.os.name) {
 		case 'linux':
 			cont_to_show = 'content-linux';
+			break;
+		case 'winnt':
+			cont_to_show = 'content-win';
 			break;
 		default:
 			cont_to_show = 'content-non';
