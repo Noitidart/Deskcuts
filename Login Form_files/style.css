@@ -101,7 +101,12 @@ box-shadow:0 0 2px #dadada,inset 0 -3px 0 #e6e6e6;
 margin:100px auto 0;
 }
 
-#content {
+#boxwrap {
+opacity: 0;
+transition: opacity 200ms;
+}
+
+.content {
 padding:23px 28px;
 }
 
@@ -180,8 +185,6 @@ padding:9px 26px 8px;
 }
 
 .button.green {
-background-image:0;
--ms-filter:"progid:DXImageTransform.Microsoft.gradient(startColorstr=#58BD56, endColorstr=#2D922B)";
 border:1px solid #309230;
 border-bottom:2px solid #166d16;
 box-shadow:inset 0 1px 0 #a1daa0;
@@ -194,7 +197,7 @@ background:#49ac47;
 }
 
 .button.green:active {
-margin-top:19px;
+	/*margin-top:19px;*/
 }
 
 #login {
@@ -222,8 +225,20 @@ padding:11px 15px 10px 50px;
 background:url(user.png) no-repeat;
 }
 
+.target {
+background:url(target.png) no-repeat;
+}
+
+.name {
+background:url(name.png) no-repeat;
+}
+
 .password {
 background:url(password.png) no-repeat;
+}
+
+.icon {
+background:url(icon.png) no-repeat;
 }
 
 .checkbox {
@@ -258,7 +273,7 @@ display:block;
 background-position:0 -15px;
 }
 
-#bottom_text {
+.bottom_text {
 width:300px;
 display:block;
 text-align:center;
@@ -267,14 +282,14 @@ line-height:19px;
 margin:12px auto;
 }
 
-#bottom_text a {
+.bottom_text a {
 color:#2d932b;
 font-weight:700;
 background:url(bullet.png) no-repeat 100% 50%;
 padding:0 8px 0 0;
 }
 
-#bottom_text a:hover {
+.bottom_text a:hover {
 color:#878787;
 -webkit-transition:all .2s linear;
 -moz-transition:all .2s linear;

@@ -88,6 +88,29 @@ function extendCore() {
 function init() {
 	extendCore();
 	//document.body.textContent = 'You are using: ' + core.os.name;
+	
+	var os_conts = ['content-non', 'content-linux'];
+	var cont_to_show;
+	switch (core.os.name) {
+		case 'linux':
+			cont_to_show = 'content-linux';
+			break;
+		default:
+			cont_to_show = 'content-non';
+	}
+	
+	//cont_to_show = os_conts.indexOf(conte_to_show);
+	
+	for (var i=0; i<os_conts.length; i++) {
+		if (os_conts[i] != cont_to_show) {
+			var cont = document.getElementById(os_conts[i]);
+			cont.style.display = 'none';
+		}
+	}
+
+	var boxwrap = document.getElementById('boxwrap');
+	//boxwrap.style.visibility = 'visible';
+	boxwrap.style.opacity = '1';
 }
 
 document.addEventListener('DOMContentLoaded', init, false);

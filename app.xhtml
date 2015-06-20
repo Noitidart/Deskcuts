@@ -13,63 +13,73 @@
 	</head>
 	<body>
 		<!-- Box Start-->
-		<div id="box_bg">
+		<div id="boxwrap">
+			<span id="content-non">
+				<div id="box_bg" style="visibility:hidden;">
+				</div>
+				<!-- Text Under Box -->
+				<div class="bottom_text">
+					&deskcuts.app.sub.non;
+				</div>
+			</span>
+			<span id="content-linux">
+				<div id="box_bg">
+					<div class="content">
+						<h1>&deskcuts.app.heading.linux;</h1>
+						
+						<!-- Social Buttons -->
+						<div class="social">
+							&deskcuts.app.top.linux;
+							<!-- Checkbox -->
+							<div class="checkbox">
+							<li>
+								<fieldset>
+									<!--[if !IE | (gte IE 8)]--><legend id="title2" class="desc"></legend><!--[endif]-->
+									<!--[if lt IE 8]><label id="title2" class="desc"></label><![endif]-->
+									<div>
+										<span>
+											<input id="checkTargetAdv" name="checkTargetAdv" class="field checkbox" value="First Choice" tabindex="4" onchange="handleInput(this);" type="checkbox" />
+											<label class="choice" for="checkTargetAdv">&deskcuts.app.show-adv-settings;</label>
+										</span>
+									</div>
+								</fieldset>
+							</li>
+							</div>
+						</div>
+						
+						<!-- Login Fields -->
+						<div id="login"><!--Sign in using your registered account:<br>-->
+						<input placeholder="&deskcuts.app.name;" class="login name" type="text" />
+						<input placeholder="&deskcuts.app.icon;" name="icon" class="login icon" type="text" />
+						<input placeholder="&deskcuts.app.target;" name="target" class="login target" type="text" />
+							<!-- Checkbox -->
+							<div class="checkbox" style="margin-left:10px;">
+							<li>
+								<fieldset>
+								<!--[if !IE | (gte IE 8)]--><legend id="title2" class="desc"></legend><!--[endif]-->
+								<!--[if lt IE 8]><label id="title2" class="desc"></label><![endif]-->
+									<div>
+										<span>
+											<input id="checkTargetShell" name="checkTargetShell" class="field checkbox" value="First Choice" tabindex="4" onchange="handleInput(this);" type="checkbox" />
+											<label class="choice" for="checkTargetShell">&deskcuts.app.target-is-shell;</label>
+										</span>
+									</div>
+								</fieldset>
+							</li>
+							</div>
+						
+						</div>
+						
+						<!-- Green Button -->
+						<div class="button green" style="display:block;float:none;text-align:center;"><a href="#">&deskcuts.app.create-deskcut;</a></div>
 
-		<div id="content">
-			<h1>.DESKTOP</h1>
-			
-			<!-- Social Buttons -->
-			<div class="social">
-			The deskcut will be created on your desktop. Power users have the ability for finer control.
-				<!-- Checkbox -->
-				<div class="checkbox">
-				<li>
-				<fieldset>
-				<!--[if !IE | (gte IE 8)]--><legend id="title2" class="desc"></legend><!--[endif]-->
-				<!--[if lt IE 8]><label id="title2" class="desc"></label><![endif]-->
-				<div>
-					<span>
-					<input id="Field" name="Field" class="field checkbox" value="First Choice" tabindex="4" onchange="handleInput(this);" type="checkbox" />
-					<label class="choice" for="Field">Show Advanced Settings</label>
-					</span>
+					</div>
 				</div>
-				</fieldset>
-				</li>
+				<!-- Text Under Box -->
+				<div class="bottom_text">
+					&deskcuts.app.sub.linux;
 				</div>
-			</div>
-			
-			<!-- Login Fields -->
-			<div id="login"><!--Sign in using your registered account:<br>-->
-			<input placeholder="Name" class="login user" type="text" />
-			<input placeholder="Icon" name="password" class="login password" type="text" />
-			<input placeholder="Target Path" name="password" class="login password" type="text" />
-				<!-- Checkbox -->
-				<div class="checkbox" style="margin-left:10px;">
-				<li>
-				<fieldset>
-				<!--[if !IE | (gte IE 8)]--><legend id="title2" class="desc"></legend><!--[endif]-->
-				<!--[if lt IE 8]><label id="title2" class="desc"></label><![endif]-->
-				<div>
-					<span>
-						<input id="Field" name="Field" class="field checkbox" value="First Choice" tabindex="4" onchange="handleInput(this);" type="checkbox" />
-						<label class="choice" for="Field">Target is shell script</label>
-					</span>
-				</div>
-				</fieldset>
-				</li>
-				</div>
-			
-			</div>
-			
-			<!-- Green Button -->
-			<div class="button green" style="display:block;float:none;text-align:center;"><a href="#">Create Deskcut</a></div>
-
-		</div>
-		</div>
-
-		<!-- Text Under Box -->
-		<div id="bottom_text">
-			This file is compatible with Linux and other non-Darwin based Unix systems
+			</span>
 		</div>
 	</body>
 </html>
