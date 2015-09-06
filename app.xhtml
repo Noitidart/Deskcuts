@@ -49,23 +49,23 @@
 						
 						<!-- Login Fields -->
 						<div id="login"><!--Sign in using your registered account:<br>-->
-						<input placeholder="&deskcuts.app.name;" class="login name" type="text" />
-						<span class="targ"><input placeholder="&deskcuts.app.icon;" name="icon" class="login icon" type="text" /><img src="chrome://deskcuts/content/Login Form_files/search.png" class="browse-targ" onclick="browseIcon(event)"/></span>
-						<span class="targ"><input placeholder="&deskcuts.app.target;" name="target" class="login target" type="text" /><img src="chrome://deskcuts/content/Login Form_files/search.png" class="browse-targ" onclick="browseTarg(event)"/></span>
+							<input placeholder="&deskcuts.app.name;" class="login name" type="text" />
+							<span class="targ"><input placeholder="&deskcuts.app.icon;" name="icon" class="login icon" type="text" /><img src="chrome://deskcuts/content/Login Form_files/search.png" class="browse-targ" onclick="browseIcon(event)"/></span>
+							<span class="targ"><input placeholder="&deskcuts.app.target;" name="target" class="login target" type="text" /><img src="chrome://deskcuts/content/Login Form_files/search.png" class="browse-targ" onclick="browseTarg(event)"/></span>
 							<!-- Checkbox -->
 							<div class="checkbox" style="margin-left:10px;">
-							<li>
-								<fieldset>
-								<!--[if !IE | (gte IE 8)]--><legend id="title2" class="desc"></legend><!--[endif]-->
-								<!--[if lt IE 8]><label id="title2" class="desc"></label><![endif]-->
-									<div>
-										<span>
-											<input id="checkTargetNonApp" name="checkTargetNonApp" class="field checkbox" value="First Choice" tabindex="4" onchange="handleInput(this);" type="checkbox" />
-											<label class="choice" for="checkTargetNonApp">&deskcuts.app.target-is-non-app;</label>
-										</span>
-									</div>
-								</fieldset>
-							</li>
+								<li>
+									<fieldset>
+									<!--[if !IE | (gte IE 8)]--><legend id="title2" class="desc"></legend><!--[endif]-->
+									<!--[if lt IE 8]><label id="title2" class="desc"></label><![endif]-->
+										<div>
+											<span>
+												<input id="checkTargetNonApp" name="checkTargetNonApp" class="field checkbox" value="First Choice" tabindex="4" type="checkbox" />
+												<label class="choice" for="checkTargetNonApp">&deskcuts.app.target-is-non-app;</label>
+											</span>
+										</div>
+									</fieldset>
+								</li>
 							</div>
 						
 						</div>
@@ -121,6 +121,21 @@
 							<input placeholder="&deskcuts.app.name;" class="login name" type="text" />
 							<span class="targ"><input placeholder="&deskcuts.app.icon;" name="icon" class="login icon" type="text" /><img src="chrome://deskcuts/content/Login Form_files/search.png" class="browse-targ" onclick="browseIcon(event)"/></span>
 							<span class="targ"><input placeholder="&deskcuts.app.target;" name="target" class="login target" type="text" /><img src="chrome://deskcuts/content/Login Form_files/search.png" class="browse-targ" onclick="browseTarg(event)"/></span>
+							<!-- Checkbox -->
+							<div class="checkbox" style="margin-left:10px;">
+								<li>
+									<fieldset>
+									<!--[if !IE | (gte IE 8)]--><legend id="title2" class="desc"></legend><!--[endif]-->
+									<!--[if lt IE 8]><label id="title2" class="desc"></label><![endif]-->
+										<div>
+											<span>
+												<input id="checkTargetNonAppMac" name="checkTargetNonAppMac" class="field checkbox" value="First Choice" tabindex="4" type="checkbox" />
+												<label class="choice" for="checkTargetNonAppMac">&deskcuts.app.target-is-non-app;</label>
+											</span>
+										</div>
+									</fieldset>
+								</li>
+							</div>
 						</div>
 						
 						<!-- Green Button -->

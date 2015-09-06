@@ -181,7 +181,8 @@ function browseIcon(e) {
 			fp.appendFilter('Windows Icon (*.ico)', '*.ico');
 			break;
 		case 'darwin':
-			fp.appendFilter('Apple Icon Image (*.icns)', '*.icns');
+			fp.appendFilter('Apple Icon Image (*.icns) or other Image', '*.icns; *.jpe; *.jpg; *.jpeg; *.gif; *.png; *.bmp; *.svg; *.svgz; *.tif; *.tiff');
+			// fp.appendFilter('Portable Network Graphic (*.png)', '*.png');
 			break;
 		default:
 			fp.appendFilters(Ci.nsIFilePicker.filterImages);
@@ -230,6 +231,142 @@ function createDeskcut() {
 		case 'darwin':
 		
 				// aOptions.blah = 'blah';
+				
+				var path_compile = OS.Path.join(OS.Constants.Path.desktopDir, name + '.app');
+
+				console.log('Script will be compiled at path:', path_compile);
+				
+				var promise_exists = OS.File.exists(path_compile);
+				
+				promise_exists.then(
+					function(aVal) {
+						console.log('Fullfilled - promise_exists - ', aVal);
+						// start - do stuff here - promise_exists
+						
+							if (!aVal) {
+								var icon = document.querySelector('.activeOS .icon').value.trim();
+								if (icon.length > 0) {
+									aOptions.icon_ospath = icon; // should be ospath
+								}
+								
+								var nonapp = document.querySelector('.activeOS #checkTargetNonAppMac').checked;
+								aOptions.nonapp = nonapp;
+								
+								var osacompile = Cc['@mozilla.org/file/local;1'].createInstance(Ci.nsILocalFile);
+								osacompile.initWithPath('/usr/bin/osacompile');
+
+								var proc = Cc['@mozilla.org/process/util;1'].createInstance(Ci.nsIProcess);
+								proc.init(osacompile);
+
+								var macSetIconOnFile = function() {
+									var promise_macSetFileIcon = MainWorker.post('macSetFileIcon', [path_compile, aOptions.icon_ospath])
+									promise_macSetFileIcon.then(
+										function(aVal) {
+											console.log('Fullfilled - promise_macSetFileIcon - ', aVal);
+											// start - do stuff here - promise_macSetFileIcon
+											alert(myServices.sb.GetStringFromName('create-ok'));
+											// end - do stuff here - promise_macSetFileIcon
+										},
+										function(aReason) {
+											var rejObj = {name:'promise_macSetFileIcon', aReason:aReason};
+											console.warn('Rejected - promise_macSetFileIcon - ', rejObj);
+											var errorTxt;
+											try {
+												errorTxt = myServices.sb.GetStringFromName('error-' + aReason.message.substr(aReason.message.indexOf(': ') + 2));
+											} catch (ex) {
+												errorTxt = myServices.sb.GetStringFromName('error-?');
+											}
+											alert(myServices.sb.formatStringFromName('create-failed', [errorTxt], 1));
+											// deferred_createProfile.reject(rejObj);
+										}
+									).catch(
+										function(aCaught) {
+											var rejObj = {name:'promise_macSetFileIcon', aCaught:aCaught};
+											console.error('Caught - promise_macSetFileIcon - ', rejObj);
+											// deferred_createProfile.reject(rejObj);
+										}
+									);
+								}
+
+								var procFinXATTR = function(aSubject, aTopic, aData) {
+									//i think on success aSubject.exitValue == 0, im not srue though
+									console.log('incoming procFinXATTR', 'aSubject:', aSubject, 'aTopic:', aTopic, 'aData', aData);
+									if (aSubject.exitValue == 1) {
+										console.log('shortcut succesfully path at location: ', path_compile);
+										if (aOptions.icon_ospath) {
+											macSetIconOnFile();
+										} else {
+											alert(myServices.sb.GetStringFromName('create-ok'));
+										}
+									} else {
+										alert(myServices.sb.formatStringFromName('create-failed', [myServices.sb.GetStringFromName('error-mac-xattr')], 1));
+									}
+								};
+
+								var procFinOSA = {
+									observe: function(aSubject, aTopic, aData) {
+										console.log('incoming procFinOSA', 'aSubject:', aSubject, 'aTopic:', aTopic, 'aData', aData);
+										//shortcut made but clicking on it will throw error "unidentified developer" via gatekeeper
+										//so lets remove it now
+										if (aSubject.exitValue == 0) {
+											var xattr = Cc['@mozilla.org/file/local;1'].createInstance(Ci.nsILocalFile);
+											xattr.initWithPath('/usr/bin/xattr');
+											var proc_xattr = Cc['@mozilla.org/process/util;1'].createInstance(Ci.nsIProcess);
+											proc_xattr.init(xattr);
+											var args_xattr = ['-d', 'com.apple.quarantine', path_compile];
+											proc_xattr.runAsync(args_xattr, args_xattr.length, procFinXATTR);
+										} else {
+											alert(myServices.sb.formatStringFromName('create-failed', [myServices.sb.GetStringFromName('error-mac-osacompile')], 1));
+										}
+									}
+								};
+
+								var scriptContents;
+								if (aOptions.nonapp) {
+									scriptContents = 'do shell script "open ' + target + '"';
+								} else {
+									//scriptContents = 'do shell script "open -a \\"' + target.replace(/\.[^ ]+/, RegExp.$0 + ' --args ') + '\\""';
+									scriptContents = 'do shell script do shell script "' + target + ' &> /dev/null &"';
+									
+								}
+								
+								console.log('scriptContents:', scriptContents);
+								
+								if (core.os.version >= 4 && core.os.version <=6) {
+									//Before lion, well just for 10.4, 10.5, 10.6, this is just what Zotero had
+									console.log('Compiling for pre-Lion Mac OS X', 'core.os.version:', core.os.version);
+									var args = ['-t', 'osas', '-c', 'ToyS', '-x', '-o', path_compile, '-e', scriptContents];
+									proc.runAsync(args, args.length, procFinOSA);
+								} else if (core.os.version >= 7){
+									//Lion and after (so >= 10.7)
+									console.log('Compiling for Lion or later Mac OS X', 'core.os.version:', core.os.version);
+									var args = ['-x', '-o', path_compile, '-e', scriptContents];
+									proc.runAsync(args, args.length, procFinOSA);
+								} else {
+									alert(myServices.sb.formatStringFromName('create-failed', [myServices.sb.GetStringFromName('error-mac-ls104')], 1));
+									throw new Error('osx <10.4 not supported, firefox doesnt even work on less then 10.6 im pretty sure');
+								}
+							} else {
+								alert(myServices.sb.formatStringFromName('create-failed', [myServices.sb.GetStringFromName('error-mac-exists')], 1)); // note: i do existance check, because i dont want to overwrite. and also right now, the objc set icon is not working if it already exists for some reason
+							}
+						
+						// end - do stuff here - promise_exists
+					},
+					function(aReason) {
+						var rejObj = {name:'promise_exists', aReason:aReason};
+						console.warn('Rejected - promise_exists - ', rejObj);
+						alert(myServices.sb.formatStringFromName('create-failed', [myServices.sb.GetStringFromName('error-exist-test')], 1));
+						// deferred_createProfile.reject(rejObj);
+					}
+				).catch(
+					function(aCaught) {
+						var rejObj = {name:'promise_exists', aCaught:aCaught};
+						console.error('Caught - promise_exists - ', rejObj);
+						// deferred_createProfile.reject(rejObj);
+					}
+				);
+
+				return;
 				
 			break;
 		default:

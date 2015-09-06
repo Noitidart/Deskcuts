@@ -250,6 +250,33 @@ function makeCut(aCreate_name, aTarget_string, aOptions={}) {
 	
 }
 
+function macSetFileIcon(aTarget_osPath, aIcon_osPath) {
+	if (core.os.name != 'darwin') {
+		throw new Error('os-unsupported');
+	}
+	try {
+		var myNSStrings = new ostypes.HELPER.nsstringColl();
+		var NSImage = ostypes.HELPER.class('NSImage');
+		var allocImage = ostypes.API('objc_msgSend')(NSImage, ostypes.HELPER.sel('alloc'));
+		console.info('allocImage:', allocImage.toString());
+		
+		var icon = ostypes.API('objc_msgSend')(allocImage, ostypes.HELPER.sel('initWithContentsOfFile:'), myNSStrings.get(aIcon_osPath));
+		console.info('icon:', icon.toString());
+		
+		var NSWorkspace = ostypes.HELPER.class('NSWorkspace');
+		var myWorkspace = ostypes.API('objc_msgSend')(NSWorkspace, ostypes.HELPER.sel('sharedWorkspace'));
+		console.info('myWorkspace:', myWorkspace.toString());
+		
+		var rez_setIcon = ostypes.API('objc_msgSend_BOOL')(myWorkspace, ostypes.HELPER.sel('setIcon:forFile:options:'), icon, myNSStrings.get(aTarget_osPath), ostypes.TYPE.NSUInteger(0));
+		console.info('rez_setIcon:', rez_setIcon.toString());
+		
+	} finally {
+		if (myNSStrings) {
+			myNSStrings.releaseAll()
+		}
+	}
+}
+
 // End - Addon Functionality
 
 // Start - Common helper functions
