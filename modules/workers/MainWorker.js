@@ -78,6 +78,10 @@ function init(objCore) {
 	
 	// OS Specific Init
 	switch (core.os.toolkit.indexOf('gtk') == 0 ? 'gtk' : core.os.name) {
+		case 'darwin':
+		
+			OSStuff.FileUtils_PERMS_DIRECTORY = 493;
+		
 		default:
 			// do nothing special
 	}
@@ -86,7 +90,7 @@ function init(objCore) {
 }
 
 // Start - Addon Functionality
-function makeCut(aCreate_name, aTarget_osPath, aOptions={}) {
+function makeCut(aCreate_name, aTarget_string, aOptions={}) {
 	// aPath can be a url, it is a js string
 	
 	switch (core.os.toolkit.indexOf('gtk') == 0 ? 'gtk' : core.os.name) {
@@ -104,9 +108,9 @@ function makeCut(aCreate_name, aTarget_osPath, aOptions={}) {
 					
 					// cannot make hard link of a directory, files only
 					
-					var aTarget_extWithDot = aTarget_osPath.substr(aTarget_osPath.lastIndexOf('.'));
+					var aTarget_extWithDot = aTarget_string.substr(aTarget_string.lastIndexOf('.'));
 					
-					var rez_CreateHardLink = ostypes.API('CreateHardLink')(OS.Path.join(OS.Constants.Path.desktopDir, aCreate_name + aTarget_extWithDot), aTarget_osPath, null);
+					var rez_CreateHardLink = ostypes.API('CreateHardLink')(OS.Path.join(OS.Constants.Path.desktopDir, aCreate_name + aTarget_extWithDot), aTarget_string, null);
 					console.info('rez_CreateHardLink:', rez_CreateHardLink.toString(), uneval(rez_CreateHardLink));
 					if (ctypes.winLastError != 0) {
 						if (ctypes.winLastError == ostypes.CONST.ERROR_ALREADY_EXISTS) {
@@ -135,15 +139,15 @@ function makeCut(aCreate_name, aTarget_osPath, aOptions={}) {
 				
 				if (!aOptions.nonapp) {
 					cmdArr.push('Type=Application');
-					cmdArr.push('Exec=' + aTarget_osPath);
+					cmdArr.push('Exec=' + aTarget_string);
 				} else {
 					cmdArr.push('Type=Link');
-					cmdArr.push('URL=' + aTarget_osPath);
+					cmdArr.push('URL=' + aTarget_string);
 					/*
 					// check if dir, if it is set type=Directory
 					var isDir = false;
 					try {
-						var stat = OS.File.stat(aTarget_osPath);
+						var stat = OS.File.stat(aTarget_string);
 						console.log('stat:', stat);
 						isDir = stat.isDir;
 					} catch(ex) {
@@ -151,10 +155,10 @@ function makeCut(aCreate_name, aTarget_osPath, aOptions={}) {
 					}
 					if (stat.isDir) {
 						cmdArr.push('Type=Directory');
-						cmdArr.push('URL=' + aTarget_osPath);
+						cmdArr.push('URL=' + aTarget_string);
 					} else {
 						cmdArr.push('Type=Link');
-						cmdArr.push('URL=' + aTarget_osPath);						
+						cmdArr.push('URL=' + aTarget_string);						
 					}
 					// else then set to URL
 					*/
@@ -178,7 +182,66 @@ function makeCut(aCreate_name, aTarget_osPath, aOptions={}) {
 			
 				// create applescript launcher
 				
-			
+				var dirApp = OS.Path.join(OS.Constants.Path.desktopDir, aCreate_name + '.app');
+				var dirContents = OS.Path.join(dirApp, 'Contents');
+				var dirMacOS = OS.Path.join(dirContents, 'MacOS');
+				var fileScript = OS.Path.join(dirMacOS, aCreate_name);
+				var dirResources = OS.Path.join(dirContents, 'Resources');
+				var filePlist = OS.Path.join(dirContents, 'Info.plist');
+				if (aOptions.icon_ospath) {
+					var fileIcon = OS.Path.join(dirResources, 'appicon.icns');
+				}
+				
+				//step 1
+				OS.File.makeDir(dirApp, {unixMode: OSStuff.FileUtils_PERMS_DIRECTORY, ignoreExisting: true});
+				
+				//step 2
+				OS.File.makeDir(dirContents, {unixMode: OSStuff.FileUtils_PERMS_DIRECTORY, ignoreExisting: true});
+				
+				//step 3 - grouping in this step means i can make any dir in any order
+				OS.File.makeDir(dirMacOS, {unixMode: OSStuff.FileUtils_PERMS_DIRECTORY, ignoreExisting: true});
+				OS.File.makeDir(dirResources, {unixMode: OSStuff.FileUtils_PERMS_DIRECTORY, ignoreExisting: true});
+
+				OS.File.writeAtomic(filePlist, '<?xml version="1.0" encoding="UTF-8"?>\
+													<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\
+													<plist version="1.0">\
+														<dict>\
+															<key>CFBundleAllowMixedLocalizations</key>\
+															<true/>\
+															<key>CFBundleDevelopmentRegion</key>\
+															<string>English</string>\
+															<key>CFBundleExecutable</key>\
+															<string>' + escapeXML(aCreate_name) + '</string>\
+															<key>CFBundleIconFile</key>\
+															<string>appicon</string>\
+															<key>CFBundleIdentifier</key>\
+															<string>com.apple.ScriptEditor.id.' + escapeXML(aCreate_name + Math.random()) + '</string>\
+															<key>CFBundleInfoDictionaryVersion</key>\
+															<string>6.0</string>\
+															<key>CFBundleName</key>\
+															<string>' + escapeXML(aCreate_name) + '</string>\
+															<key>CFBundlePackageType</key>\
+															<string>APPL</string>\
+															<key>CFBundleShortVersionString</key>\
+															<string>1.0</string>\
+															<key>CFBundleSignature</key>\
+															<string>aplt</string>\
+															<key>LSUIElement</key>\
+															<string>true</string>\
+														</dict>\
+													</plist>', {encoding:'utf-8', /*unixMode: OSStuff.FileUtils_PERMS_DIRECTORY,*/ noOverwrite: true}); //note: i dont think writeAtomic has unixMode option so i do setPermissions
+				 
+				//step 4 - after dirMacOS is made
+				OS.File.writeAtomic(fileScript, '#!/bin/sh\nexec ' + aTarget_string, {encoding:'utf-8', /*unixMode: OSStuff.FileUtils_PERMS_DIRECTORY,*/ noOverwrite: true});
+				if (aOptions.icon_ospath) {
+					OS.File.copy(iconpath, fileIcon, {noOverwrite:false}); // this should happen after dirResources is made
+				}
+				OS.File.setPermissions(filePlist, {unixMode: OSStuff.FileUtils_PERMS_DIRECTORY}); // after plist is made
+				
+				// step 5 - have to set perms on scipt, so after script is made
+				OS.File.setPermissions(fileScript, {unixMode: OSStuff.FileUtils_PERMS_DIRECTORY});
+				
+				// xattr the .app
 			break;
 		default:
 			console.error('os not supported');
@@ -188,3 +251,14 @@ function makeCut(aCreate_name, aTarget_osPath, aOptions={}) {
 }
 
 // End - Addon Functionality
+
+// Start - Common helper functions
+function escapeXML(aStr) {
+  return aStr.toString()
+             .replace(/&/g, '&amp;')
+             .replace(/"/g, '&quot;')
+             .replace(/'/g, '&apos;')
+             .replace(/</g, '&lt;')
+             .replace(/>/g, '&gt;');
+}
+// End - Common helper functions

@@ -3,7 +3,8 @@
 <!ENTITY deskcuts.app.show-adv-settings 'Show Advanced Settings (not yet available)'>
 <!ENTITY deskcuts.app.name 'Name'>
 <!ENTITY deskcuts.app.icon 'Icon'>
-<!ENTITY deskcuts.app.target 'Target Path'>
+<!ENTITY deskcuts.app.target-win 'Target Path'>
+<!ENTITY deskcuts.app.target 'Target Path with Arguments'>
 <!ENTITY deskcuts.app.target-is-shell 'Target is shell script (does nothing)'>
 <!ENTITY deskcuts.app.target-is-non-app 'Target is not an application'>
 <!ENTITY deskcuts.app.create-deskcut 'Create Deskcut'>
@@ -14,7 +15,7 @@
 
 <!ENTITY deskcuts.app.heading.mac 'APPLESCRIPT LAUNCHER'>
 <!ENTITY deskcuts.app.sub.mac 'This file is compatible with Mac OS X versions 10.4 and greater'>
-<!ENTITY deskcuts.app.top.mac 'The launcher will be created on your desktop.<br/><br/>It is currently not possible to set an icon.'>
+<!ENTITY deskcuts.app.top.mac 'The launcher will be created on your desktop.'>
 
 <!ENTITY deskcuts.app.heading.win 'HARD LINK'>
 <!ENTITY deskcuts.app.sub.win 'Hard links only work within the same disk. You cannot hard link over the network. A hard link can only be created to files, NOT directories.'>
