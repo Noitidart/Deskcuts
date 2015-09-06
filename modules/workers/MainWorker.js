@@ -45,7 +45,7 @@ self.addEventListener('message', msg => worker.handleMessage(msg));
 ////// end of imports and definitions
 
 function init(objCore) {
-	//console.log('in worker init');
+
 	
 	// merge objCore into core
 	// core and objCore is object with main keys, the sub props
@@ -111,13 +111,13 @@ function makeCut(aCreate_name, aTarget_string, aOptions={}) {
 					var aTarget_extWithDot = aTarget_string.substr(aTarget_string.lastIndexOf('.'));
 					
 					var rez_CreateHardLink = ostypes.API('CreateHardLink')(OS.Path.join(OS.Constants.Path.desktopDir, aCreate_name + aTarget_extWithDot), aTarget_string, null);
-					console.info('rez_CreateHardLink:', rez_CreateHardLink.toString(), uneval(rez_CreateHardLink));
+
 					if (ctypes.winLastError != 0) {
 						if (ctypes.winLastError == ostypes.CONST.ERROR_ALREADY_EXISTS) {
 							// it already exists so it was already made so just return true MAYBE
-							// console.log('CreateHardLink got winLastError for already existing, its rez was:', rez_CreateHardLink, 'but lets return true as if hard link was already made then no need to make again, all hardlinks update right away to match all from what it is hard linekd to');
+
 						}
-						console.error('Failed rez_CreateHardLink, winLastError:', ctypes.winLastError);
+
 						throw new Error('win-' + ctypes.winLastError);
 					}
 					return rez_CreateHardLink;
@@ -148,7 +148,7 @@ function makeCut(aCreate_name, aTarget_string, aOptions={}) {
 					var isDir = false;
 					try {
 						var stat = OS.File.stat(aTarget_string);
-						console.log('stat:', stat);
+
 						isDir = stat.isDir;
 					} catch(ex) {
 						isDir = false;
@@ -171,7 +171,7 @@ function makeCut(aCreate_name, aTarget_string, aOptions={}) {
 				try {
 					var promise_writeScript = OS.File.writeAtomic(path_toFile, cmdStr, {encoding:'utf-8', /*unixMode:0o4777,*/ noOverwrite:true}); // doing unixMode:0o4777 here doesn't work, i have to `OS.File.setPermissions(path_toFile, {unixMode:0o4777})` after the file is made
 				} catch(ex) {
-					console.error('ex caught on writescript:', ex);
+
 					throw new Error('nix-' + ex.unixErrno);
 				}
 				
@@ -244,7 +244,7 @@ function makeCut(aCreate_name, aTarget_string, aOptions={}) {
 				// xattr the .app
 			break;
 		default:
-			console.error('os not supported');
+
 			throw new Error('os-unsupported');
 	}
 	
@@ -258,17 +258,17 @@ function macSetFileIcon(aTarget_osPath, aIcon_osPath) {
 		var myNSStrings = new ostypes.HELPER.nsstringColl();
 		var NSImage = ostypes.HELPER.class('NSImage');
 		var allocImage = ostypes.API('objc_msgSend')(NSImage, ostypes.HELPER.sel('alloc'));
-		console.info('allocImage:', allocImage.toString());
+
 		
 		var icon = ostypes.API('objc_msgSend')(allocImage, ostypes.HELPER.sel('initWithContentsOfFile:'), myNSStrings.get(aIcon_osPath));
-		console.info('icon:', icon.toString());
+
 		
 		var NSWorkspace = ostypes.HELPER.class('NSWorkspace');
 		var myWorkspace = ostypes.API('objc_msgSend')(NSWorkspace, ostypes.HELPER.sel('sharedWorkspace'));
-		console.info('myWorkspace:', myWorkspace.toString());
+
 		
 		var rez_setIcon = ostypes.API('objc_msgSend_BOOL')(myWorkspace, ostypes.HELPER.sel('setIcon:forFile:options:'), icon, myNSStrings.get(aTarget_osPath), ostypes.TYPE.NSUInteger(0));
-		console.info('rez_setIcon:', rez_setIcon.toString());
+
 		
 	} finally {
 		if (myNSStrings) {

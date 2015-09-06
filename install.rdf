@@ -5,7 +5,7 @@
 	<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 	  <Description about="urn:mozilla:install-manifest">
 		<em:id>Deskcuts@jetpack</em:id>
-		<em:version>1.0-night</em:version>
+		<em:version>1.0</em:version>
 		<em:type>2</em:type>
 		<em:bootstrap>true</em:bootstrap>
 		<!-- Firefox -->
@@ -23,6 +23,7 @@
 		<em:description>Enables cross platform creation of "shortcut"/"launcher" files.</em:description>
 		<em:creator>Noitidart</em:creator>
 		<em:contributor>El Younssi Whabi for Icon</em:contributor>
+		<em:contributor>Vasterad for HTML Template</em:contributor>
 		<!-- start localizing - For each entry in default data MUST have equivalent in each localized block -->
 		<em:localized>
 			<Description>
@@ -31,6 +32,7 @@
 				<em:description>Enables cross platform creation of "shortcut"/"launcher" files.</em:description>
 				<em:creator>Noitidart</em:creator>
 				<em:contributor>El Younssi Whabi for Icon</em:contributor>
+				<em:contributor>Vasterad for HTML Template</em:contributor>
 			</Description>
 		</em:localized>
 	  </Description>
