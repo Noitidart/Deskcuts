@@ -123,8 +123,7 @@ function Factory(component) {
 	Object.freeze(this);
 	this.register();
 }
-
-var factory = new Factory(AboutDeskcuts);
+var myAboutInstance;
 // END - Addon Functionalities
 
 function install() {}
@@ -134,11 +133,19 @@ function startup(aData, aReason) {
 	//core.addon.aData = aData;
 	extendCore();
 
+	myAboutInstance = new Factory(AboutDeskcuts);
+	
+	if (aReason == ADDON_INSTALL) {
+		var cWin = Services.wm.getMostRecentWindow('navigator:browser');
+		if (cWin) {
+			cWin.gBrowser.loadOneTab('about:deskcuts', {inBackground:false});
+		}
+	}
 }
 
 function shutdown(aData, aReason) {
 	if (aReason == APP_SHUTDOWN) { return }
-	factory.unregister();
+	myAboutInstance.unregister();
 }
 
 // start - common helper functions
