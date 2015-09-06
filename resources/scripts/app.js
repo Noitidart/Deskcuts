@@ -89,7 +89,7 @@ function init() {
 	extendCore();
 	//document.body.textContent = 'You are using: ' + core.os.name;
 	
-	var os_conts = ['content-non', 'content-linux', 'content-win'];
+	var os_conts = ['content-non', 'content-linux', 'content-win', 'content-mac'];
 	var cont_to_show;
 	switch (core.os.name) {
 		case 'linux':
@@ -97,6 +97,9 @@ function init() {
 			break;
 		case 'winnt':
 			cont_to_show = 'content-win';
+			break;
+		case 'darwin':
+			cont_to_show = 'content-mac';
 			break;
 		default:
 			cont_to_show = 'content-non';
@@ -114,6 +117,8 @@ function init() {
 	var boxwrap = document.getElementById('boxwrap');
 	//boxwrap.style.visibility = 'visible';
 	boxwrap.style.opacity = '1';
+	
+	document.querySelector('.button .green').addEventListener('click', createDeskcut, false);
 }
 
 function browseTarg(e) {
@@ -156,6 +161,10 @@ function browseIcon(e) {
 		input.value = fp.file.path;
 
 	}// else { // cancelled	}
+}
+
+function createDeskcut() {
+	alert('hi');
 }
 
 document.addEventListener('DOMContentLoaded', init, false);

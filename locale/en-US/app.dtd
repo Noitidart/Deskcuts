@@ -1,6 +1,6 @@
 <!ENTITY deskcuts.app.title 'Deskcuts'>
 <!ENTITY deskcuts.app.desc 'Application Frontend for Deskcuts a Firefox Add-on'>
-<!ENTITY deskcuts.app.show-adv-settings 'Show Advanced Settings'>
+<!ENTITY deskcuts.app.show-adv-settings 'Show Advanced Settings (not yet available)'>
 <!ENTITY deskcuts.app.name 'Name'>
 <!ENTITY deskcuts.app.icon 'Icon'>
 <!ENTITY deskcuts.app.target 'Target Path'>
@@ -11,9 +11,9 @@
 <!ENTITY deskcuts.app.sub.linux 'This file is compatible with Linux and other non-Darwin based Unix systems'>
 <!ENTITY deskcuts.app.top.linux 'The deskcut will be created on your desktop. Power users have the ability for finer control.'>
 
-<!ENTITY deskcuts.app.heading.mac 'AppleScript Launcher'>
+<!ENTITY deskcuts.app.heading.mac 'APPLESCRIPT LAUNCHER'>
 <!ENTITY deskcuts.app.sub.mac 'This file is compatible with Mac OS X versions 10.4 and greater'>
-<!ENTITY deskcuts.app.top.mac 'The launcher will be created on your desktop. Power users have the ability for finer control.'>
+<!ENTITY deskcuts.app.top.mac 'The launcher will be created on your desktop.<br/><br/>It is currently not possible to set an icon.'>
 
 <!ENTITY deskcuts.app.heading.win 'HARD LINK'>
 <!ENTITY deskcuts.app.sub.win 'Hard links only work within the same disk. You cannot hard link over the network. A hard link can only be created to files, NOT directories.'>
