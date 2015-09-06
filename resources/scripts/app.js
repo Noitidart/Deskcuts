@@ -1,6 +1,7 @@
 // Imports
 const {classes: Cc, interfaces: Ci, utils: Cu} = Components;
 Cu.import('resource://gre/modules/osfile.jsm');
+var PromiseWorker = Cu.import('resource://gre/modules/PromiseWorker.jsm', {}).BasePromiseWorker;
 Cu.import('resource://gre/modules/Services.jsm');
 Cu.import('resource://gre/modules/XPCOMUtils.jsm');
 
@@ -14,17 +15,20 @@ const core = {
 			content: 'chrome://deskcuts/content/',
 			locale: 'chrome://deskcuts/locale/',
 			resources: 'chrome://deskcuts/content/resources/',
-			images: 'chrome://deskcuts/content/resources/images/'
-		}
+			images: 'chrome://deskcuts/content/resources/images/',
+			workers: 'chrome://deskcuts/content/modules/workers/',
+		},
+		cache_key: Math.random()
 	},
 	os: {
 		name: OS.Constants.Sys.Name.toLowerCase()
 	}
 };
+var bootstrap = this;
 
 // Lazy Imports
 const myServices = {};
-XPCOMUtils.defineLazyGetter(myServices, 'sb', function () { return Services.strings.createBundle(core.addon.path.locale + 'app.properties?' + Math.random()); /* Randomize URI to work around bug 719376 */ });
+XPCOMUtils.defineLazyGetter(myServices, 'sb', function () { return Services.strings.createBundle(core.addon.path.locale + 'app.properties?' + core.addon.cache_key); /* Randomize URI to work around bug 719376 */ });
 
 function extendCore() {
 	// adds some properties i use to core
@@ -111,6 +115,9 @@ function init() {
 		if (os_conts[i] != cont_to_show) {
 			var cont = document.getElementById(os_conts[i]);
 			cont.style.display = 'none';
+		} else {
+			var cont = document.getElementById(os_conts[i]);
+			cont.classList.add('activeOS');
 		}
 	}
 
@@ -118,7 +125,31 @@ function init() {
 	//boxwrap.style.visibility = 'visible';
 	boxwrap.style.opacity = '1';
 	
-	document.querySelector('.button .green').addEventListener('click', createDeskcut, false);
+	document.querySelector('.activeOS .green').addEventListener('click', createDeskcut, false);
+	
+	var promise_getMainWorker = SIPWorker('MainWorker', core.addon.path.workers + 'MainWorker.js');
+	promise_getMainWorker.then(
+		function(aVal) {
+			console.log('Fullfilled - promise_getMainWorker - ', aVal);
+			// start - do stuff here - promise_getMainWorker
+			// end - do stuff here - promise_getMainWorker
+		},
+		function(aReason) {
+			var rejObj = {
+				name: 'promise_getMainWorker',
+				aReason: aReason
+			};
+			console.warn('Rejected - promise_getMainWorker - ', rejObj);
+		}
+	).catch(
+		function(aCaught) {
+			var rejObj = {
+				name: 'promise_getMainWorker',
+				aCaught: aCaught
+			};
+			console.error('Caught - promise_getMainWorker - ', rejObj);
+		}
+	);
 }
 
 function browseTarg(e) {
@@ -164,7 +195,161 @@ function browseIcon(e) {
 }
 
 function createDeskcut() {
-	alert('hi');
+	
+	var name = document.querySelector('.activeOS .name').value.trim();
+	var target = document.querySelector('.activeOS .target').value.trim();
+	
+	if (name.length == 0 || target.length == 0) {
+		alert(myServices.sb.GetStringFromName('name-and-target-required'));
+		return;
+	}
+	
+	var aOptions = {};
+	var args = [name, target, aOptions];
+	switch (core.os.name) {
+		case 'linux':
+		
+				// aOptions.blah = 'blah';
+				
+			break;
+		case 'winnt':
+		
+				// aOptions.blah = 'blah';
+				
+			break;
+		case 'darwin':
+		
+				// aOptions.blah = 'blah';
+				
+			break;
+		default:
+			throw new Error('os not supported');
+	}
+	
+	var promise_makeCut = MainWorker.post('makeCut', args);
+	promise_makeCut.then(
+		function(aVal) {
+			console.log('Fullfilled - promise_makeCut - ', aVal);
+			// start - do stuff here - promise_makeCut
+			alert(myServices.sb.GetStringFromName('create-ok'));
+			// end - do stuff here - promise_makeCut
+		},
+		function(aReason) {
+			var rejObj = {name:'promise_makeCut', aReason:aReason};
+			console.warn('Rejected - promise_makeCut - ', rejObj);
+			var errorTxt;
+			try {
+				errorTxt = myServices.sb.GetStringFromName('error-' + aReason.message.substr(aReason.message.indexOf(': ') + 2));
+			} catch (ex) {
+				errorTxt = myServices.sb.GetStringFromName('error-?');
+			}
+			alert(myServices.sb.formatStringFromName('create-failed', [errorTxt], 1));
+			// deferred_createProfile.reject(rejObj);
+		}
+	).catch(
+		function(aCaught) {
+			var rejObj = {name:'promise_makeCut', aCaught:aCaught};
+			console.error('Caught - promise_makeCut - ', rejObj);
+			// deferred_createProfile.reject(rejObj);
+		}
+	);
 }
+
+// start - common helper functions
+function aReasonMax(aReason) {
+	var deepestReason = aReason;
+	while (deepestReason.hasOwnProperty('aReason') || deepestReason.hasOwnProperty()) {
+		if (deepestReason.hasOwnProperty('aReason')) {
+			deepestReason = deepestReason.aReason;
+		} else if (deepestReason.hasOwnProperty('aCaught')) {
+			deepestReason = deepestReason.aCaught;
+		}
+	}
+	return deepestReason;
+}
+function Deferred() {
+	// update 062115 for typeof
+	if (typeof(Promise) != 'undefined' && Promise.defer) {
+		//need import of Promise.jsm for example: Cu.import('resource:/gree/modules/Promise.jsm');
+		return Promise.defer();
+	} else if (typeof(PromiseUtils) != 'undefined'  && PromiseUtils.defer) {
+		//need import of PromiseUtils.jsm for example: Cu.import('resource:/gree/modules/PromiseUtils.jsm');
+		return PromiseUtils.defer();
+	} else {
+		/* A method to resolve the associated Promise with the value passed.
+		 * If the promise is already settled it does nothing.
+		 *
+		 * @param {anything} value : This value is used to resolve the promise
+		 * If the value is a Promise then the associated promise assumes the state
+		 * of Promise passed as value.
+		 */
+		this.resolve = null;
+
+		/* A method to reject the assocaited Promise with the value passed.
+		 * If the promise is already settled it does nothing.
+		 *
+		 * @param {anything} reason: The reason for the rejection of the Promise.
+		 * Generally its an Error object. If however a Promise is passed, then the Promise
+		 * itself will be the reason for rejection no matter the state of the Promise.
+		 */
+		this.reject = null;
+
+		/* A newly created Pomise object.
+		 * Initially in pending state.
+		 */
+		this.promise = new Promise(function(resolve, reject) {
+			this.resolve = resolve;
+			this.reject = reject;
+		}.bind(this));
+		Object.freeze(this);
+	}
+}
+function SIPWorker(workerScopeName, aPath, aCore=core) {
+	// "Start and Initialize PromiseWorker"
+	// returns promise
+		// resolve value: jsBool true
+	// aCore is what you want aCore to be populated with
+	// aPath is something like `core.addon.path.content + 'modules/workers/blah-blah.js'`
+	
+	// :todo: add support and detection for regular ChromeWorker // maybe? cuz if i do then ill need to do ChromeWorker with callback
+	
+	var deferredMain_SIPWorker = new Deferred();
+
+	if (!(workerScopeName in bootstrap)) {
+		bootstrap[workerScopeName] = new PromiseWorker(aPath);
+		
+		if ('addon' in aCore && 'aData' in aCore.addon) {
+			delete aCore.addon.aData; // we delete this because it has nsIFile and other crap it, but maybe in future if I need this I can try JSON.stringify'ing it
+		}
+		
+		var promise_initWorker = bootstrap[workerScopeName].post('init', [aCore]);
+		promise_initWorker.then(
+			function(aVal) {
+				console.log('Fullfilled - promise_initWorker - ', aVal);
+				// start - do stuff here - promise_initWorker
+				deferredMain_SIPWorker.resolve(true);
+				// end - do stuff here - promise_initWorker
+			},
+			function(aReason) {
+				var rejObj = {name:'promise_initWorker', aReason:aReason};
+				console.warn('Rejected - promise_initWorker - ', rejObj);
+				deferredMain_SIPWorker.reject(rejObj);
+			}
+		).catch(
+			function(aCaught) {
+				var rejObj = {name:'promise_initWorker', aCaught:aCaught};
+				console.error('Caught - promise_initWorker - ', rejObj);
+				deferredMain_SIPWorker.reject(rejObj);
+			}
+		);
+		
+	} else {
+		deferredMain_SIPWorker.reject('Something is loaded into bootstrap[workerScopeName] already');
+	}
+	
+	return deferredMain_SIPWorker.promise;
+	
+}
+// end - common helper functions
 
 document.addEventListener('DOMContentLoaded', init, false);
