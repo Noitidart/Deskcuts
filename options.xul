@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<!DOCTYPE mydialog SYSTEM "chrome://deskcuts/locale/options_inline.dtd">
+<vbox xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<setting title="&deskcuts.options-inline.app-launch-title;" type="control" desc="&deskcuts.options-inline.app-launch-desc;">
+		<button label="&deskcuts.options-inline.app-launch-btn;" oncommand="window.location='about:deskcuts'" />
+	</setting>
+</vbox>
