@@ -8,7 +8,7 @@ importScripts('resource://gre/modules/workers/require.js');
 var core = {
 	addon: {
 		path: {
-			content: 'chrome://naow/content/',
+			content: 'chrome://deskcuts/content/',
 		}
 	},
 	os: {
@@ -122,7 +122,56 @@ function makeCut(aCreate_name, aTarget_osPath, aOptions={}) {
 		case 'gtk':
 			
 				// create .desktop
+				var cmdArr = [
+					'[Desktop Entry]',
+					'Name=' + aCreate_name
+					// 'Comment=Web Application',
+					// 'Icon=' + path_icon
+				];
+
+				if (aOptions.icon) {
+					cmdArr.push('Icon=' + aOptions.icon);
+				}
 				
+				if (!aOptions.nonapp) {
+					cmdArr.push('Type=Application');
+					cmdArr.push('Exec=' + aTarget_osPath);
+				} else {
+					cmdArr.push('Type=Link');
+					cmdArr.push('URL=' + aTarget_osPath);
+					/*
+					// check if dir, if it is set type=Directory
+					var isDir = false;
+					try {
+						var stat = OS.File.stat(aTarget_osPath);
+						console.log('stat:', stat);
+						isDir = stat.isDir;
+					} catch(ex) {
+						isDir = false;
+					}
+					if (stat.isDir) {
+						cmdArr.push('Type=Directory');
+						cmdArr.push('URL=' + aTarget_osPath);
+					} else {
+						cmdArr.push('Type=Link');
+						cmdArr.push('URL=' + aTarget_osPath);						
+					}
+					// else then set to URL
+					*/
+				}
+				
+				var cmdStr = cmdArr.join('\n');
+				
+				var path_toFile = OS.Path.join(OS.Constants.Path.desktopDir, aCreate_name + '.desktop');
+				
+				try {
+					var promise_writeScript = OS.File.writeAtomic(path_toFile, cmdStr, {encoding:'utf-8', /*unixMode:0o4777,*/ noOverwrite:true}); // doing unixMode:0o4777 here doesn't work, i have to `OS.File.setPermissions(path_toFile, {unixMode:0o4777})` after the file is made
+				} catch(ex) {
+					console.error('ex caught on writescript:', ex);
+					throw new Error('nix-' + ex.unixErrno);
+				}
+				
+				var promise_setPermsScript = OS.File.setPermissions(path_toFile, {unixMode:0o4777});
 			
 			break;
 		case 'darwin':
@@ -133,6 +182,7 @@ function makeCut(aCreate_name, aTarget_osPath, aOptions={}) {
 			break;
 		default:
 			console.error('os not supported');
+			throw new Error('os-unsupported');
 	}
 	
 }

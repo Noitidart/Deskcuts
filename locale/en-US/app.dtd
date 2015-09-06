@@ -4,12 +4,13 @@
 <!ENTITY deskcuts.app.name 'Name'>
 <!ENTITY deskcuts.app.icon 'Icon'>
 <!ENTITY deskcuts.app.target 'Target Path'>
-<!ENTITY deskcuts.app.target-is-shell 'Target is shell script'>
+<!ENTITY deskcuts.app.target-is-shell 'Target is shell script (does nothing)'>
+<!ENTITY deskcuts.app.target-is-non-app 'Target is not an application'>
 <!ENTITY deskcuts.app.create-deskcut 'Create Deskcut'>
 
 <!ENTITY deskcuts.app.heading.linux '.DESKTOP'>
-<!ENTITY deskcuts.app.sub.linux 'This file is compatible with Linux and other non-Darwin based Unix systems'>
-<!ENTITY deskcuts.app.top.linux 'The deskcut will be created on your desktop. Power users have the ability for finer control.'>
+<!ENTITY deskcuts.app.sub.linux 'This file is compatible with Linux and other Unix based systems excluding Mac OS X'>
+<!ENTITY deskcuts.app.top.linux 'The .desktop file will be created on your desktop. Power users have the ability for finer control.'>
 
 <!ENTITY deskcuts.app.heading.mac 'APPLESCRIPT LAUNCHER'>
 <!ENTITY deskcuts.app.sub.mac 'This file is compatible with Mac OS X versions 10.4 and greater'>
@@ -17,6 +18,6 @@
 
 <!ENTITY deskcuts.app.heading.win 'HARD LINK'>
 <!ENTITY deskcuts.app.sub.win 'Hard links only work within the same disk. You cannot hard link over the network. A hard link can only be created to files, NOT directories.'>
-<!ENTITY deskcuts.app.top.win 'The deskcut will be created on your desktop.<br/><br/>A custom icon cannot be set, it will be automatically taken from the target.<br/><br/>If target exists on desktop, provided name must differ.'>
+<!ENTITY deskcuts.app.top.win 'The hard link will be created on your desktop.<br/><br/>A custom icon cannot be set, it will be automatically taken from the target.<br/><br/>If target exists on desktop, provided name must differ.'>
 
 <!ENTITY deskcuts.app.sub.non 'Deskcuts does not support your operating system'>

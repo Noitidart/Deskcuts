@@ -210,6 +210,15 @@ function createDeskcut() {
 		case 'linux':
 		
 				// aOptions.blah = 'blah';
+				var icon = document.querySelector('.activeOS .icon').value.trim();
+				if (icon.length > 0) {
+					aOptions.icon = icon;
+				}
+				
+				var nonapp = document.querySelector('.activeOS #checkTargetNonApp').checked;
+				aOptions.nonapp = nonapp;
+				
+				// if nonapp is true, worker will test if its a directory, if its not, then will set type to "Link"
 				
 			break;
 		case 'winnt':
