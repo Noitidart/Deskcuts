@@ -50,9 +50,9 @@ function extendCore() {
 			
 		case 'darwin':
 			var userAgent = myServices.hph.userAgent;
-
+			//console.info('userAgent:', userAgent);
 			var version_osx = userAgent.match(/Mac OS X 10\.([\d\.]+)/);
-
+			//console.info('version_osx matched:', version_osx);
 			
 			if (!version_osx) {
 				throw new Error('Could not identify Mac OS X version.');
@@ -85,7 +85,7 @@ function extendCore() {
 	core.firefox = {};
 	core.firefox.version = Services.appinfo.version;
 	
-
+	console.log('done adding to core, it is now:', core);
 }
 
 // START - Addon Functionalities

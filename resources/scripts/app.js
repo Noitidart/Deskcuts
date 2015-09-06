@@ -18,7 +18,7 @@ const core = {
 			images: 'chrome://deskcuts/content/resources/images/',
 			workers: 'chrome://deskcuts/content/modules/workers/',
 		},
-		cache_key: 'v1.0'
+		cache_key: Math.random()
 	},
 	os: {
 		name: OS.Constants.Sys.Name.toLowerCase()
@@ -52,9 +52,9 @@ function extendCore() {
 			
 		case 'darwin':
 			var userAgent = myServices.hph.userAgent;
-
+			//console.info('userAgent:', userAgent);
 			var version_osx = userAgent.match(/Mac OS X 10\.([\d\.]+)/);
-
+			//console.info('version_osx matched:', version_osx);
 			
 			if (!version_osx) {
 				throw new Error('Could not identify Mac OS X version.');
@@ -87,7 +87,7 @@ function extendCore() {
 	core.firefox = {};
 	core.firefox.version = Services.appinfo.version;
 	
-
+	console.log('done adding to core, it is now:', core);
 }
 
 function init() {
@@ -131,7 +131,7 @@ function init() {
 	var promise_getMainWorker = SIPWorker('MainWorker', core.addon.path.workers + 'MainWorker.js');
 	promise_getMainWorker.then(
 		function(aVal) {
-
+			console.log('Fullfilled - promise_getMainWorker - ', aVal);
 			// start - do stuff here - promise_getMainWorker
 			// end - do stuff here - promise_getMainWorker
 		},
@@ -140,7 +140,7 @@ function init() {
 				name: 'promise_getMainWorker',
 				aReason: aReason
 			};
-
+			console.warn('Rejected - promise_getMainWorker - ', rejObj);
 		}
 	).catch(
 		function(aCaught) {
@@ -148,7 +148,7 @@ function init() {
 				name: 'promise_getMainWorker',
 				aCaught: aCaught
 			};
-
+			console.error('Caught - promise_getMainWorker - ', rejObj);
 		}
 	);
 }
@@ -234,13 +234,13 @@ function createDeskcut() {
 				
 				var path_compile = OS.Path.join(OS.Constants.Path.desktopDir, name + '.app');
 
-
+				console.log('Script will be compiled at path:', path_compile);
 				
 				var promise_exists = OS.File.exists(path_compile);
 				
 				promise_exists.then(
 					function(aVal) {
-
+						console.log('Fullfilled - promise_exists - ', aVal);
 						// start - do stuff here - promise_exists
 						
 							if (!aVal) {
@@ -262,14 +262,14 @@ function createDeskcut() {
 									var promise_macSetFileIcon = MainWorker.post('macSetFileIcon', [path_compile, aOptions.icon_ospath])
 									promise_macSetFileIcon.then(
 										function(aVal) {
-
+											console.log('Fullfilled - promise_macSetFileIcon - ', aVal);
 											// start - do stuff here - promise_macSetFileIcon
 											alert(myServices.sb.GetStringFromName('create-ok'));
 											// end - do stuff here - promise_macSetFileIcon
 										},
 										function(aReason) {
 											var rejObj = {name:'promise_macSetFileIcon', aReason:aReason};
-
+											console.warn('Rejected - promise_macSetFileIcon - ', rejObj);
 											var errorTxt;
 											try {
 												errorTxt = myServices.sb.GetStringFromName('error-' + aReason.message.substr(aReason.message.indexOf(': ') + 2));
@@ -282,7 +282,7 @@ function createDeskcut() {
 									).catch(
 										function(aCaught) {
 											var rejObj = {name:'promise_macSetFileIcon', aCaught:aCaught};
-
+											console.error('Caught - promise_macSetFileIcon - ', rejObj);
 											// deferred_createProfile.reject(rejObj);
 										}
 									);
@@ -290,9 +290,9 @@ function createDeskcut() {
 
 								var procFinXATTR = function(aSubject, aTopic, aData) {
 									//i think on success aSubject.exitValue == 0, im not srue though
-
+									console.log('incoming procFinXATTR', 'aSubject:', aSubject, 'aTopic:', aTopic, 'aData', aData);
 									if (aSubject.exitValue == 1) {
-
+										console.log('shortcut succesfully path at location: ', path_compile);
 										if (aOptions.icon_ospath) {
 											macSetIconOnFile();
 										} else {
@@ -305,7 +305,7 @@ function createDeskcut() {
 
 								var procFinOSA = {
 									observe: function(aSubject, aTopic, aData) {
-
+										console.log('incoming procFinOSA', 'aSubject:', aSubject, 'aTopic:', aTopic, 'aData', aData);
 										//shortcut made but clicking on it will throw error "unidentified developer" via gatekeeper
 										//so lets remove it now
 										if (aSubject.exitValue == 0) {
@@ -330,16 +330,16 @@ function createDeskcut() {
 									
 								}
 								
-
+								console.log('scriptContents:', scriptContents);
 								
 								if (core.os.version >= 4 && core.os.version <=6) {
 									//Before lion, well just for 10.4, 10.5, 10.6, this is just what Zotero had
-
+									console.log('Compiling for pre-Lion Mac OS X', 'core.os.version:', core.os.version);
 									var args = ['-t', 'osas', '-c', 'ToyS', '-x', '-o', path_compile, '-e', scriptContents];
 									proc.runAsync(args, args.length, procFinOSA);
 								} else if (core.os.version >= 7){
 									//Lion and after (so >= 10.7)
-
+									console.log('Compiling for Lion or later Mac OS X', 'core.os.version:', core.os.version);
 									var args = ['-x', '-o', path_compile, '-e', scriptContents];
 									proc.runAsync(args, args.length, procFinOSA);
 								} else {
@@ -354,14 +354,14 @@ function createDeskcut() {
 					},
 					function(aReason) {
 						var rejObj = {name:'promise_exists', aReason:aReason};
-
+						console.warn('Rejected - promise_exists - ', rejObj);
 						alert(myServices.sb.formatStringFromName('create-failed', [myServices.sb.GetStringFromName('error-exist-test')], 1));
 						// deferred_createProfile.reject(rejObj);
 					}
 				).catch(
 					function(aCaught) {
 						var rejObj = {name:'promise_exists', aCaught:aCaught};
-
+						console.error('Caught - promise_exists - ', rejObj);
 						// deferred_createProfile.reject(rejObj);
 					}
 				);
@@ -376,14 +376,14 @@ function createDeskcut() {
 	var promise_makeCut = MainWorker.post('makeCut', args);
 	promise_makeCut.then(
 		function(aVal) {
-
+			console.log('Fullfilled - promise_makeCut - ', aVal);
 			// start - do stuff here - promise_makeCut
 			alert(myServices.sb.GetStringFromName('create-ok'));
 			// end - do stuff here - promise_makeCut
 		},
 		function(aReason) {
 			var rejObj = {name:'promise_makeCut', aReason:aReason};
-
+			console.warn('Rejected - promise_makeCut - ', rejObj);
 			var errorTxt;
 			try {
 				errorTxt = myServices.sb.GetStringFromName('error-' + aReason.message.substr(aReason.message.indexOf(': ') + 2));
@@ -396,7 +396,7 @@ function createDeskcut() {
 	).catch(
 		function(aCaught) {
 			var rejObj = {name:'promise_makeCut', aCaught:aCaught};
-
+			console.error('Caught - promise_makeCut - ', rejObj);
 			// deferred_createProfile.reject(rejObj);
 		}
 	);
@@ -472,20 +472,20 @@ function SIPWorker(workerScopeName, aPath, aCore=core) {
 		var promise_initWorker = bootstrap[workerScopeName].post('init', [aCore]);
 		promise_initWorker.then(
 			function(aVal) {
-
+				console.log('Fullfilled - promise_initWorker - ', aVal);
 				// start - do stuff here - promise_initWorker
 				deferredMain_SIPWorker.resolve(true);
 				// end - do stuff here - promise_initWorker
 			},
 			function(aReason) {
 				var rejObj = {name:'promise_initWorker', aReason:aReason};
-
+				console.warn('Rejected - promise_initWorker - ', rejObj);
 				deferredMain_SIPWorker.reject(rejObj);
 			}
 		).catch(
 			function(aCaught) {
 				var rejObj = {name:'promise_initWorker', aCaught:aCaught};
-
+				console.error('Caught - promise_initWorker - ', rejObj);
 				deferredMain_SIPWorker.reject(rejObj);
 			}
 		);
