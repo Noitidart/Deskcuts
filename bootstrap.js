@@ -17,7 +17,8 @@ const core = {
 			locale: 'chrome://deskcuts/locale/',
 			resources: 'chrome://deskcuts/content/resources/',
 			images: 'chrome://deskcuts/content/resources/images/'
-		}
+		},
+		cache_key: Math.random()
 	},
 	os: {
 		name: OS.Constants.Sys.Name.toLowerCase()
@@ -27,7 +28,7 @@ const core = {
 // Lazy Imports
 const myServices = {};
 XPCOMUtils.defineLazyGetter(myServices, 'hph', function () { return Cc['@mozilla.org/network/protocol;1?name=http'].getService(Ci.nsIHttpProtocolHandler); });
-XPCOMUtils.defineLazyGetter(myServices, 'sb', function () { return Services.strings.createBundle(core.addon.path.locale + 'bootstrap.properties?' + Math.random()); /* Randomize URI to work around bug 719376 */ });
+XPCOMUtils.defineLazyGetter(myServices, 'sb', function () { return Services.strings.createBundle(core.addon.path.locale + 'bootstrap.properties?' + core.addon.cache_key); /* Randomize URI to work around bug 719376 */ });
 
 function extendCore() {
 	// adds some properties i use to core
@@ -91,7 +92,7 @@ function extendCore() {
 // START - Addon Functionalities
 function AboutDeskcuts() {}
 AboutDeskcuts.prototype = Object.freeze({
-	classDescription: 'Deskcuts Application',
+	classDescription: myServices.sb.GetStringFromName('about-page_desc'),
 	contractID: '@mozilla.org/network/protocol/about;1?what=deskcuts',
 	classID: Components.ID('{C4BC5338-14B1-11E5-B6A2-D7251E5D46B0}'),
 	QueryInterface: XPCOMUtils.generateQI([Ci.nsIAboutModule]),

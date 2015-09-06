@@ -20,7 +20,7 @@
 		<!-- Front End MetaData -->
 		<!-- must provide default non-localized because It's used as a default on AMO. It's used as a default by the add-on manager, with the possibility of other locales overriding it. Failure to provide a non-localized name will lead to failed upload on AMO. -->
 		<em:name>Deskcuts</em:name>
-		<em:description>Enables cross platform creation of "shortcut"/"launcher" files.</em:description>
+		<em:description>HTML5 application enabling cross platform creation of "shortcut"/"launcher" file types that are not exposed by default by the operating system.</em:description>
 		<em:creator>Noitidart</em:creator>
 		<em:contributor>El Younssi Whabi for Icon</em:contributor>
 		<em:contributor>Vasterad for HTML Template</em:contributor>
@@ -29,7 +29,7 @@
 			<Description>
 				<em:locale>en-US</em:locale>
 				<em:name>Deskcuts</em:name>
-				<em:description>Enables cross platform creation of "shortcut"/"launcher" files.</em:description>
+				<em:description>HTML5 application enabling cross platform creation of "shortcut"/"launcher" file types that are not exposed by default by the operating system.</em:description>
 				<em:creator>Noitidart</em:creator>
 				<em:contributor>El Younssi Whabi for Icon</em:contributor>
 				<em:contributor>Vasterad for HTML Template</em:contributor>
